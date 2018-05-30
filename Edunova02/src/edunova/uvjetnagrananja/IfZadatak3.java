@@ -9,9 +9,9 @@ public class IfZadatak3 {
 	// 8 3 8 -> 3
 
 	public static void main(String[] args) {
-		int firstNum = 3;
-		int secondNum = 1;
-		int thirdNum = 0;
+		int firstNum = 4;
+		int secondNum = 2;
+		int thirdNum = 5;
 
 		if (firstNum < secondNum && firstNum < thirdNum) {
 			System.out.println(firstNum);
@@ -24,6 +24,9 @@ public class IfZadatak3 {
 		else {
 			System.out.println(thirdNum);
 		}
+		
+		System.out.println((firstNum<secondNum) && firstNum < thirdNum ? firstNum : secondNum<firstNum && secondNum<thirdNum ? secondNum : thirdNum);
+
 	}
 
 }
