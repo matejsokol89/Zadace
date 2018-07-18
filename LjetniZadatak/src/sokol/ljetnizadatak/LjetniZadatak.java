@@ -1,6 +1,8 @@
 
 package sokol.ljetnizadatak;
 
+
+
 /**
  *
  * @author Sokol
@@ -11,7 +13,9 @@ public class LjetniZadatak {
 
     
     public static void main(String[] args) {
-        new NbaBaza().setVisible(true);
+        new Menu().setVisible(true);
+        
+        
     }
     
 }

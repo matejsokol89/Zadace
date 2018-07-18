@@ -5,6 +5,7 @@ public class NbaTeam {
     private String name;
     private String city;
     private int id_team;
+    
 
     public String getName() {
         return name;

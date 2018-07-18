@@ -6,6 +6,9 @@
 package sokol.ljetnizadatak;
 
 import java.awt.Component;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -40,6 +43,7 @@ public class NbaBaza extends javax.swing.JFrame {
      */
     public NbaBaza() {
         initComponents();
+     
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -260,6 +264,14 @@ public class NbaBaza extends javax.swing.JFrame {
        txtCity.setText(nt.getCity());
     }//GEN-LAST:event_lstListaValueChanged
 
+    public static void openUrl(String urlSite){
+        try {
+            Desktop.getDesktop().browse(new URL(urlSite).toURI());
+       
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * @param args the command line arguments
      */
