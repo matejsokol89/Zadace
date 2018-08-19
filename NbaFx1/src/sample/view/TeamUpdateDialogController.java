@@ -3,33 +3,35 @@ package sample.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sample.model.NbaTeam;
+import sample.util.NamedParameterStatement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 
 /**
- * Dialog to edit details of a team.
  *
- * @author Marco Jakob
  */
-public class TeamEditDialogController {
-
+public class TeamUpdateDialogController {
     @FXML
     private TextField nameField;
     @FXML
     private TextField cityField;
+    @FXML
+    private TextField id_team;
 
-    private Stage dialogStage;
+    private Stage dialogStage1;
     private NbaTeam team;
-    private boolean okClicked = false;
+    private boolean okClicked1 = false;
 
     private Connection veza;
     private PreparedStatement izraz;
+
+    @FXML
+    private TableView<NbaTeam> nbaTeamTable;
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -42,10 +44,10 @@ public class TeamEditDialogController {
     /**
      * Sets the stage of this dialog.
      *
-     * @param dialogStage
+     * @param dialogStage1
      */
-    public void setDialogStage(Stage dialogStage) {
-        this.dialogStage = dialogStage;
+    public void setDialogStage1(Stage dialogStage1) {
+        this.dialogStage1 = dialogStage1;
     }
 
     /**
@@ -53,7 +55,7 @@ public class TeamEditDialogController {
      *
      * @param team
      */
-    public void setTeam(NbaTeam team) {
+    public void setTeam1(NbaTeam team) {
         this.team = team;
         nameField.setText(team.getName());
         cityField.setText(team.getCity());
@@ -64,7 +66,7 @@ public class TeamEditDialogController {
      *
      * @param veza
      */
-    public void setDbConnection(Connection veza) {
+    public void setDbConnection1(Connection veza) {
         this.veza = veza;
     }
 
@@ -73,49 +75,59 @@ public class TeamEditDialogController {
      *
      * @return
      */
-    public boolean isOkClicked() {
-        return okClicked;
+    public boolean isOkClicked1() {
+        return okClicked1;
     }
 
     /**
      * Called when the user clicks ok.
      */
     @FXML
-    private void handleOk() {
+    private void handleOk1() {
         if (isInputValid()) {
             team.setName(nameField.getText());
             team.setCity(cityField.getText());
-            saveToDb();
-            okClicked = true;
-            dialogStage.close();
+            saveToDb1();
+            okClicked1 = true;
+            dialogStage1.close();
         }
     }
 
-    private void saveToDb() {
+    private void saveToDb1() {
+        NbaTeam nt = nbaTeamTable.getSelectionModel().getSelectedItem();
+        if (nt == null) {
+            //JOptionPane.showMessageDialog(getRootPane(), "Prvo odaberi nbateam");
+            return ;
+        }
         try {
+            NamedParameterStatement izraz = new NamedParameterStatement(veza,
+                    "update nbateam set name=:name, "
+                            + "city=:city"
+                            + " where id_team=:id_team");
+            izraz.setString("name", nameField.getText());
+            izraz.setString("city", nameField.getText());
+            izraz.setInt("id_team", nt.getId_team());
 
-            izraz = veza.prepareStatement("insert into nbateam (name,city) " + " value (?,?)");
-            izraz.setString(1, nameField.getText());
-            izraz.setString(2, cityField.getText());
-
-            if (izraz.executeUpdate() == 0) {
-                //JOptionPane.showMessageDialog(getRootPane(), "Nije unio ni jedan red");
-            } else {
-                //ucitajizBaze();
-                //ocistiPolja();
+            if(izraz.izvedi()==0){
+                //JOptionPane.showMessageDialog(getRootPane(), "Nije promjenjeno");
             }
-            izraz.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            else{
+                //ocistiPolja();
+                //ucitajizBaze();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
     /**
      * Called when the user clicks cancel.
      */
     @FXML
     private void handleCancel() {
-        dialogStage.close();
+        dialogStage1.close();
     }
 
     /**
@@ -139,7 +151,7 @@ public class TeamEditDialogController {
         } else {
             // Show the error message.
             Alert alert = new Alert(AlertType.ERROR);
-            alert.initOwner(dialogStage);
+            alert.initOwner(dialogStage1);
             alert.setTitle("Invalid Fields");
             alert.setHeaderText("Please correct invalid fields");
             alert.setContentText(errorMessage);

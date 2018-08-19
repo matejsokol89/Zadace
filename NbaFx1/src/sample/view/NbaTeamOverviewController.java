@@ -1,15 +1,18 @@
 package sample.view;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import sample.MainApp;
 import sample.model.NbaTeam;
 
-import javax.swing.*;
-import java.sql.*;
-
-import static javax.swing.SwingUtilities.getRootPane;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 
 public class NbaTeamOverviewController {
@@ -76,6 +79,9 @@ public class NbaTeamOverviewController {
     public void setDbConnection(Connection veza) {
         this.veza = veza;
     }
+    public void setDbConnection1(Connection veza) {
+        this.veza = veza;
+    }
 
 
     /**
@@ -100,38 +106,50 @@ public class NbaTeamOverviewController {
      * Called when the user clicks on the delete button.
      */
     @FXML
-    private void deleteFromDb() throws SQLException {
-        //TODO: implement sql delete
+    private boolean deleteFromDb() throws SQLException {
         NbaTeam nt = nbaTeamTable.getSelectionModel().getSelectedItem();
-        if (nt==null) {
+        if (nt == null) {
             //JOptionPane.showMessageDialog(getRootPane(), "Prvo odaberi nbateam");
-            return;
+            return false;
         }
         try {
+            System.out.println("Selected and deleting " + nt.toString());
             izraz = veza.prepareStatement("delete from nbateam where id_team=?");
-            izraz.setInt(1, nt.getId_team() );
+            izraz.setInt(1, nt.getId_team());
 
-            if(izraz.executeUpdate()==0){
-              //  JOptionPane.showMessageDialog(getRootPane(), "Nije ništa obrisao");
-            }
-            else{
+            if (izraz.executeUpdate() == 0) {
+                //  JOptionPane.showMessageDialog(getRootPane(), "Nije ništa obrisao");
+            } else {
                 //ucitajizBaze();
-               // ocistiPolja();
+                // ocistiPolja();
             }
             izraz.close();
+            return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             //JOptionPane.showMessageDialog(getRootPane(), "Ne možeš obrisati to jer ima grupe");
-        }
-        catch(SQLException ex){
+            System.out.println(e.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("NBA Team Delete Error");
+            alert.setHeaderText("Unable to delete from database");
+            Label label = new Label(e.getMessage());
+            label.setWrapText(true);
+            alert.getDialogPane().setContent(label);
+
+            alert.showAndWait();
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return false;
     }
+
     @FXML
     private void handleDeleteTeam() throws SQLException {
         int selectedIndex = nbaTeamTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            nbaTeamTable.getItems().remove(selectedIndex);
-            deleteFromDb();
+            if (deleteFromDb()) {
+                nbaTeamTable.getItems().remove(selectedIndex);
+            }
         } else {
             // Nothing selected.
             Alert alert = new Alert(AlertType.WARNING);
@@ -139,7 +157,7 @@ public class NbaTeamOverviewController {
             alert.setTitle("No Selection");
             alert.setHeaderText("No Team Selected");
             alert.setContentText("Please select a team in the table.");
-            
+
             alert.showAndWait();
         }
     }
@@ -170,7 +188,33 @@ public class NbaTeamOverviewController {
     private void handleEditTeam() {
         NbaTeam selectedTeam = nbaTeamTable.getSelectionModel().getSelectedItem();
         if (selectedTeam != null) {
-            boolean okClicked = mainApp.showTeamEditDialog(selectedTeam);
+            boolean okClicked1 = mainApp.showTeamUpdateDialog(selectedTeam);
+            if (okClicked1) {
+               showNbaTeamDataDetail(selectedTeam);
+            }
+
+        } else {
+            // Nothing selected.
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Team Selected");
+            alert.setContentText("Please select a team in the table.");
+            
+            alert.showAndWait();
+        }
+    }
+
+
+    /**
+     * Called when the user clicks the edit button. Opens a dialog to edit
+     * details for the selected person.
+     */
+    @FXML
+    private void handleUpdateTeam() {
+        NbaTeam selectedTeam = nbaTeamTable.getSelectionModel().getSelectedItem();
+        if (selectedTeam != null) {
+            boolean okClicked = mainApp.showTeamUpdateDialog(selectedTeam);
             if (okClicked) {
                 showNbaTeamDataDetail(selectedTeam);
             }
@@ -182,7 +226,7 @@ public class NbaTeamOverviewController {
             alert.setTitle("No Selection");
             alert.setHeaderText("No Team Selected");
             alert.setContentText("Please select a team in the table.");
-            
+
             alert.showAndWait();
         }
     }
