@@ -1,10 +1,5 @@
 package sample;
 
-import java.io.IOException;
-import java.sql.*;
-import java.text.Collator;
-import java.util.*;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,8 +12,13 @@ import javafx.stage.Stage;
 import sample.model.NbaTeam;
 import sample.view.NbaTeamOverviewController;
 import sample.view.TeamEditDialogController;
+import sample.view.TeamUpdateDialogController;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.sql.*;
+import java.text.Collator;
+import java.util.*;
 
 
 public class MainApp extends Application {
@@ -49,13 +49,14 @@ public class MainApp extends Application {
         }
 
         try {
-            veza = DriverManager.getConnection("jdbc:mysql://localhost/nbastats?"
+            veza = DriverManager.getConnection("jdbc:mysql://localhost:3306/NBA_STATS?"
                     + "user=edunova&password=edunova&serverTimezone=CET&useUnicode=true&characterEncoding=utf-8");
             ucitajizBaze();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
+
 
     private void ucitajizBaze() {
         try {
@@ -76,15 +77,15 @@ public class MainApp extends Application {
                 Collator col = Collator.getInstance(new Locale("hr", "HR"));
 
                 public int compare(NbaTeam nt1, NbaTeam nt2) {
+
                     return col.compare(nt1.getName(), nt2.getName());
                 }
             });
             DefaultListModel<NbaTeam> m = new DefaultListModel<>();
             lista.forEach((nbaTeam) -> m.addElement(nbaTeam));
             lista.forEach((item) -> System.out.println(item));
-            for (NbaTeam team : lista) {
-                nbaTeamData.add(team);
-            }
+            nbaTeamData.setAll(lista);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,6 +97,7 @@ public class MainApp extends Application {
      * @return
      */
     public ObservableList<NbaTeam> getNbaTeamData() {
+
         return nbaTeamData;
     }
 
@@ -184,6 +186,38 @@ public class MainApp extends Application {
             dialogStage.showAndWait();
 
             return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean showTeamUpdateDialog(NbaTeam team) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            //loader.setLocation(TeamUpdateDialogController.class.getResource("/sample/FXML.fxml"));
+            loader.setLocation(MainApp.class.getResource("view/TeamUpdateDialog.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage1 = new Stage();
+            dialogStage1.setTitle("Update Team");
+            dialogStage1.initModality(Modality.WINDOW_MODAL);
+            dialogStage1.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage1.setScene(scene);
+
+            // Set the person into the controller.
+
+            TeamUpdateDialogController controller = loader.getController();
+            controller.setDbConnection1(veza);
+            controller.setDialogStage1(dialogStage1);
+            controller.setTeam1(team);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage1.showAndWait();
+
+            return controller.isOkClicked1();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
