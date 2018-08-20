@@ -50,7 +50,7 @@ public class NbaTeamOverviewController {
         // Initialize the person table with the two columns.
         name.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         city.setCellValueFactory(cellData -> cellData.getValue().cityProperty());
-        
+
         // Clear person details.
         showNbaTeamDataDetail(null);
 
@@ -61,7 +61,7 @@ public class NbaTeamOverviewController {
 
     /**
      * Is called by the main application to give a reference back to itself.
-     * 
+     *
      * @param mainApp
      */
     public void setMainApp(MainApp mainApp) {
@@ -79,15 +79,12 @@ public class NbaTeamOverviewController {
     public void setDbConnection(Connection veza) {
         this.veza = veza;
     }
-    public void setDbConnection1(Connection veza) {
-        this.veza = veza;
-    }
 
 
     /**
      * Fills all text fields to show details about the person.
      * If the specified person is null, all text fields are cleared.
-     * 
+     *
      * @param team the person or null
      */
     private void showNbaTeamDataDetail(NbaTeam team) {
@@ -101,12 +98,12 @@ public class NbaTeamOverviewController {
             cityLabel.setText("");
         }
     }
-    
+
     /**
      * Called when the user clicks on the delete button.
      */
     @FXML
-    private boolean deleteFromDb() throws SQLException {
+    private boolean deleteFromDb() {
         NbaTeam nt = nbaTeamTable.getSelectionModel().getSelectedItem();
         if (nt == null) {
             //JOptionPane.showMessageDialog(getRootPane(), "Prvo odaberi nbateam");
@@ -116,7 +113,7 @@ public class NbaTeamOverviewController {
             System.out.println("Selected and deleting " + nt.toString());
             izraz = veza.prepareStatement("delete from nbateam where id_team=?");
             izraz.setInt(1, nt.getId_team());
-
+            System.out.println(izraz.toString());
             if (izraz.executeUpdate() == 0) {
                 //  JOptionPane.showMessageDialog(getRootPane(), "Nije ništa obrisao");
             } else {
@@ -165,7 +162,7 @@ public class NbaTeamOverviewController {
 
 
 
-    
+
     /**
      * Called when the user clicks the new button. Opens a dialog to edit
      * details for a new person.
@@ -174,9 +171,10 @@ public class NbaTeamOverviewController {
     private void handleNewTeam() {
 
         NbaTeam tempTeam = new NbaTeam();
-        boolean okClicked = mainApp.showTeamEditDialog(tempTeam);
+        boolean okClicked = mainApp.showNewDialog(tempTeam);
         if (okClicked) {
-            mainApp.getNbaTeamData().add(tempTeam);
+            // ponovno učitavam iz baze kako bi pokupio dobre nove ID-eve
+            mainApp.ucitajizBaze();
         }
     }
 
@@ -190,32 +188,6 @@ public class NbaTeamOverviewController {
         if (selectedTeam != null) {
             boolean okClicked1 = mainApp.showTeamUpdateDialog(selectedTeam);
             if (okClicked1) {
-               showNbaTeamDataDetail(selectedTeam);
-            }
-
-        } else {
-            // Nothing selected.
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.initOwner(mainApp.getPrimaryStage());
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Team Selected");
-            alert.setContentText("Please select a team in the table.");
-            
-            alert.showAndWait();
-        }
-    }
-
-
-    /**
-     * Called when the user clicks the edit button. Opens a dialog to edit
-     * details for the selected person.
-     */
-    @FXML
-    private void handleUpdateTeam() {
-        NbaTeam selectedTeam = nbaTeamTable.getSelectionModel().getSelectedItem();
-        if (selectedTeam != null) {
-            boolean okClicked = mainApp.showTeamUpdateDialog(selectedTeam);
-            if (okClicked) {
                 showNbaTeamDataDetail(selectedTeam);
             }
 

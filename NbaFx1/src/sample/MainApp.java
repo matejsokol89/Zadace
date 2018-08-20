@@ -11,7 +11,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.model.NbaTeam;
 import sample.view.NbaTeamOverviewController;
-import sample.view.TeamEditDialogController;
+import sample.view.TeamNewDialogController;
 import sample.view.TeamUpdateDialogController;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class MainApp extends Application {
     }
 
 
-    private void ucitajizBaze() {
+    public void ucitajizBaze() {
         try {
             izraz = veza.prepareStatement("select * from nbateam");
             ResultSet rs = izraz.executeQuery();
@@ -161,23 +161,23 @@ public class MainApp extends Application {
      * @param team the person object to be edited
      * @return true if the user clicked OK, false otherwise.
      */
-    public boolean showTeamEditDialog(NbaTeam team) {
+    public boolean showNewDialog(NbaTeam team) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/TeamEditDialog.fxml"));
+            loader.setLocation(MainApp.class.getResource("view/TeamNewDialog.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Team");
+            dialogStage.setTitle("New Team");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
             // Set the person into the controller.
-            TeamEditDialogController controller = loader.getController();
+            TeamNewDialogController controller = loader.getController();
             controller.setDbConnection(veza);
             controller.setDialogStage(dialogStage);
             controller.setTeam(team);
@@ -210,14 +210,14 @@ public class MainApp extends Application {
             // Set the person into the controller.
 
             TeamUpdateDialogController controller = loader.getController();
-            controller.setDbConnection1(veza);
-            controller.setDialogStage1(dialogStage1);
-            controller.setTeam1(team);
+            controller.setDbConnection(veza);
+            controller.setDialogStage(dialogStage1);
+            controller.setTeam(team);
 
             // Show the dialog and wait until the user closes it
             dialogStage1.showAndWait();
 
-            return controller.isOkClicked1();
+            return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

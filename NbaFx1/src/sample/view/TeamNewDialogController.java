@@ -7,14 +7,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sample.model.NbaTeam;
-import sample.util.NamedParameterStatement;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 /**
+ * Dialog to add new details of a team.
  *
+ * @author Marco Jakob
  */
-public class TeamUpdateDialogController {
+public class TeamNewDialogController {
+
     @FXML
     private TextField nameField;
     @FXML
@@ -25,6 +30,8 @@ public class TeamUpdateDialogController {
     private boolean okClicked = false;
 
     private Connection veza;
+    private PreparedStatement izraz;
+
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -37,10 +44,10 @@ public class TeamUpdateDialogController {
     /**
      * Sets the stage of this dialog.
      *
-     * @param dialogStage1
+     * @param dialogStage
      */
-    public void setDialogStage(Stage dialogStage1) {
-        this.dialogStage = dialogStage1;
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
     }
 
     /**
@@ -79,42 +86,34 @@ public class TeamUpdateDialogController {
     private void handleOk() {
         if (isInputValid()) {
             team.setName(nameField.getText());
-            team.setCity(cityField.getText());
-            saveToDb();
+            team.setCity(cityField.getText());saveToDb();
+
             okClicked = true;
             dialogStage.close();
         }
     }
 
     private void saveToDb() {
-        if (team == null) {
-            //JOptionPane.showMessageDialog(getRootPane(), "Prvo odaberi nbateam");
-            return;
-        }
         try {
-            NamedParameterStatement izraz = new NamedParameterStatement(veza,
-                    "update nbateam set name=:name, "
-                            + "city=:city"
-                            + " where id_team=:id_team");
-            izraz.setString("name", nameField.getText());
-            izraz.setString("city", cityField.getText());
-            izraz.setInt("id_team", team.getId_team());
 
-            System.out.println("updating team: " + team + " with: " + nameField.getText() + " : " + cityField.getText());
+            izraz = veza.prepareStatement("insert into nbateam (name,city) " + " value (?,?)");
+            izraz.setString(1, nameField.getText());
+            izraz.setString(2, cityField.getText());
 
-            if (izraz.izvedi() == 0) {
-                //JOptionPane.showMessageDialog(getRootPane(), "Nije promjenjeno");
+            System.out.println("NBA Team Add: " + izraz.toString());
+            if (izraz.executeUpdate() == 0) {
+                //JOptionPane.showMessageDialog(getRootPane(), "Nije unio ni jedan red");
             } else {
-                //ocistiPolja();
                 //ucitajizBaze();
+                //ocistiPolja();
             }
-
-        } catch (Exception ex) {
+            izraz.close();
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
             alert.initOwner(dialogStage);
-            alert.setTitle("NBA Team Update Error");
-            alert.setHeaderText("Unable to update team to database");
+            alert.setTitle("NBA Team Add Error");
+            alert.setHeaderText("Unable to add new team to database");
             Label label = new Label(ex.getMessage());
             label.setWrapText(true);
             alert.getDialogPane().setContent(label);
@@ -122,7 +121,6 @@ public class TeamUpdateDialogController {
             alert.showAndWait();
         }
     }
-
 
     /**
      * Called when the user clicks cancel.
