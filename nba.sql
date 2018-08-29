@@ -1,5 +1,3 @@
-<img src="/img/20160327_144646.jpg">
-
 drop database if exists NBA_STATS;
 
 create database NBA_STATS default character set utf8;
