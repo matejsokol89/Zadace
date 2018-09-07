@@ -16,7 +16,7 @@ public class IzbornikPanel extends javax.swing.JPanel {
      */
     public IzbornikPanel() {
         initComponents();
-        setName("Main menu");
+        setName("Menu");
     }
 
     /**

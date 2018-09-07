@@ -16,7 +16,7 @@ public class OperateriPanel extends javax.swing.JPanel {
      */
     public OperateriPanel() {
         initComponents();
-        setName("Operateri");
+        setName("Operators");
     }
 
     /**

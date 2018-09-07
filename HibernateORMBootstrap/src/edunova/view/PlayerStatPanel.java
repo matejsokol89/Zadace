@@ -16,7 +16,7 @@ public class PlayerStatPanel extends javax.swing.JPanel {
      */
     public PlayerStatPanel() {
         initComponents();
-        setName("Player Stats");
+        setName("Player stats");
     }
 
     /**

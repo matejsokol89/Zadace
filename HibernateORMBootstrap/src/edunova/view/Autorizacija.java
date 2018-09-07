@@ -40,7 +40,12 @@ public class Autorizacija extends javax.swing.JFrame {
 
         jLabel1.setText("email");
 
-        txtEmail.setText("tjakopec@gmail.com");
+        txtEmail.setText("sokolvm@gmail.com");
+        txtEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEmailActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("lozinka");
 
@@ -105,6 +110,10 @@ public class Autorizacija extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailActionPerformed
 
   
 

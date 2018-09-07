@@ -35,7 +35,7 @@ public class Prozor extends javax.swing.JFrame {
         pnlPocetna = new IzbornikPanel();
         pnlNbaTeams = new NbaTeamsPanel();
         pnlPlayers = new PlayerPanel();
-        pnlPlayerStats = new PlayerPanel();
+        pnlPlayerStats = new PlayerStatPanel();
         pnlGame = new GamePanel();
         pnlOperators = new OperateriPanel();
 
@@ -223,19 +223,19 @@ public class Prozor extends javax.swing.JFrame {
         resetPozadinaButton();
 
         switch (panel.getName()) {
-            case "Izbornik":
+            case "Menu":
                 btnPocetna.setBackground(Color.GREEN);
                 break;
-            case "NbaTeams":
+            case "Nba teams":
                 btnNbaTeams.setBackground(Color.GREEN);
                 break;
             case "Players":
                 btnPlayers.setBackground(Color.GREEN);
                 break;
-            case "PlayerStats":
+            case "Player stats":
                 btnPlayerStats.setBackground(Color.GREEN);
                 break;
-            case "Game":
+            case "Games":
                 btnGames.setBackground(Color.GREEN);
                 break;
             case "Operators":

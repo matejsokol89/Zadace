@@ -16,7 +16,7 @@ public List<NbaTeam> getEntiteti(){
      * @return lista Smjerova prema rezultatima upita
      */
     public List<NbaTeam> getEntiteti(String uvjet){
-        return session.createQuery(" from NbaTeam nt where nt.naziv like :uvjet")
+        return session.createQuery(" from NbaTeam nt where nt.name like :uvjet")
                 .setString("uvjet", "%" + uvjet + "%")
                 .list();
     }
@@ -42,7 +42,7 @@ public List<NbaTeam> getEntiteti(){
         
         kontrola(nt);
         
-        BigInteger postojeci  = (BigInteger)session.createSQLQuery("select count(idNba) from nbateam where naziv=:naziv and idNba<>:idNba").
+        BigInteger postojeci  = (BigInteger)session.createSQLQuery("select count(idNba) from nbateam where name=:name and idNba<>:idNba").
                 setString("name", nt.getName()).setInteger("idNba", nt.getIdNba()).uniqueResult();
         if(postojeci.intValue()==1){
             throw new NbaException("Nba team s istim nazivom postoji");

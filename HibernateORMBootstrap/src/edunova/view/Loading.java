@@ -32,14 +32,14 @@ public class Loading extends javax.swing.JFrame {
         public void run() {
             Session s = HibernateUtil.getSession();
            
-            List<Operater> lista = s.createQuery("From Operator").list();
+            List<Operater> lista = s.createQuery("From Operater").list();
             Operater o = lista.isEmpty() ? null : lista.get(0);
             
                 if (o!=null && o.getIdNba()> 0) {
                     new Autorizacija().setVisible(true);
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(getRootPane(), "There is no operator, "
+                    JOptionPane.showMessageDialog(getRootPane(), "There is no operater, "
                             + "call manufacturer");
                 }
         }

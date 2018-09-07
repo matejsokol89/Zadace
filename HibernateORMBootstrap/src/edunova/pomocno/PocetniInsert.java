@@ -45,7 +45,7 @@ public class PocetniInsert {
         
         session.save(newPlayer);
         
-        session.getTransaction().commit();
+       session.getTransaction().commit();
         
         
     }
