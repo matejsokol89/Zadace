@@ -6,8 +6,19 @@
 package edunova.view;
 
 import edunova.model.Operater;
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -24,6 +35,10 @@ public class Prozor extends javax.swing.JFrame {
     private JPanel pnlOperators;
 
     private Operater operater;
+    private Date pocetakRada;
+    Image inImage;
+    static Image image = Toolkit.getDefaultToolkit().getImage("nbasmall.png");
+    static TrayIcon trayIcon = new TrayIcon(image, "Nba app");
 
     /**
      * Creates new form Prozor
@@ -40,7 +55,62 @@ public class Prozor extends javax.swing.JFrame {
         pnlOperators = new OperateriPanel();
 
         postaviPanel(pnlPocetna);
+        
+        pocetakRada=new Date();
 
+       
+       definirajTimer();
+       definirajTray();
+
+    }
+    
+     private void definirajTimer() {
+         Timer timer = new Timer();
+        timer.schedule(new  TimerTask() {
+            @Override
+            public void run() {
+                
+                long diffInSeconds = (new Date().getTime() - pocetakRada.getTime())/1000;
+             
+
+    long diff[] = new long[] { 0, 0, 0, 0 };
+    /* sec */diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+    /* min */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+    /* hours */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+    /* days */diff[0] = (diffInSeconds = (diffInSeconds / 24));
+
+                lblVrijeme.setText(String.format(
+        "%s%d:%s%d:%s%d",
+        diff[1]<10 ? "0" : "",
+        diff[1],
+        diff[2]<10 ? "0" : "",
+        diff[2],
+        diff[3]<10 ? "0" : "",
+        diff[3]));
+            }
+        }, 0, 1000);
+    }
+
+    private void definirajTray() {
+       
+        
+         if (SystemTray.isSupported()) {
+      SystemTray tray = SystemTray.getSystemTray();
+
+      trayIcon.setImageAutoSize(true);
+      trayIcon.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            setVisible(true);
+            setExtendedState(JFrame.NORMAL);
+        }
+      });
+
+      try {
+        tray.add(trayIcon);
+      } catch (AWTException e) {
+        System.err.println("TrayIcon could not be added.");
+      }
+    }
     }
 
     /**
@@ -61,8 +131,14 @@ public class Prozor extends javax.swing.JFrame {
         btnOperators = new javax.swing.JButton();
         pnlSadrzaj = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        lblVrijeme = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowIconified(java.awt.event.WindowEvent evt) {
+                formWindowIconified(evt);
+            }
+        });
 
         btnPocetna.setText("Izbornik");
         btnPocetna.addActionListener(new java.awt.event.ActionListener() {
@@ -126,7 +202,7 @@ public class Prozor extends javax.swing.JFrame {
             .addGroup(pnlIzbornikLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(btnPocetna, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(btnNbaTeams, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -143,11 +219,11 @@ public class Prozor extends javax.swing.JFrame {
         pnlSadrzaj.setLayout(pnlSadrzajLayout);
         pnlSadrzajLayout.setHorizontalGroup(
             pnlSadrzajLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 559, Short.MAX_VALUE)
+            .addGap(0, 551, Short.MAX_VALUE)
         );
         pnlSadrzajLayout.setVerticalGroup(
             pnlSadrzajLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 401, Short.MAX_VALUE)
+            .addGap(0, 359, Short.MAX_VALUE)
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -172,16 +248,23 @@ public class Prozor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnlSadrzaj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlSadrzaj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblVrijeme, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlIzbornik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlSadrzaj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlSadrzaj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblVrijeme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlIzbornik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -212,6 +295,11 @@ public class Prozor extends javax.swing.JFrame {
     private void btnOperatorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperatorsActionPerformed
         postaviPanel(pnlOperators);
     }//GEN-LAST:event_btnOperatorsActionPerformed
+
+    private void formWindowIconified(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowIconified
+                setVisible(false);
+
+    }//GEN-LAST:event_formWindowIconified
 
     private void postaviPanel(JPanel panel) {
         pnlSadrzaj.removeAll();
@@ -254,6 +342,7 @@ public class Prozor extends javax.swing.JFrame {
     private javax.swing.JButton btnPlayers;
     private javax.swing.JButton btnPocetna;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblVrijeme;
     private javax.swing.JPanel pnlIzbornik;
     private javax.swing.JPanel pnlSadrzaj;
     // End of variables declaration//GEN-END:variables
@@ -263,4 +352,5 @@ public class Prozor extends javax.swing.JFrame {
             c.setBackground(Color.gray);
         }
     }
+    
 }

@@ -40,7 +40,7 @@ public class PocetniInsert {
       newPlayer.setFirstname("Bojan");
       newPlayer.setLastname("Bogdanović");
       newPlayer.setPosition("SG");
-      newPlayer.setYersnumber("41");
+      newPlayer.setJerseynumber("41");
       
         
         session.save(newPlayer);

@@ -295,6 +295,11 @@ public class NbaTeamsPanel extends javax.swing.JPanel {
     
     
     private class NbaTeamRenderer extends JLabel implements ListCellRenderer<NbaTeam> {
+        
+         public NbaTeamRenderer(){
+            setOpaque(true);
+        }
+        
  
     @Override
     public Component getListCellRendererComponent(
@@ -302,7 +307,7 @@ public class NbaTeamsPanel extends javax.swing.JPanel {
         boolean isSelected, boolean cellHasFocus) {
           
         if(isSelected){
-            setBackground(Color.RED);
+            setBackground(Color.GRAY);
         }else{
             setBackground(Color.WHITE);
         }

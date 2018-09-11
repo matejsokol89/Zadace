@@ -4,8 +4,13 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Entity;
+
 @Entity
-public class Game extends Entitet implements Serializable{
+public class Game extends Entitet implements Serializable {
+
+    private Date dateofgame;
+    private BigInteger hometeam;
+    private BigInteger awayteam;
 
     public Date getDateofgame() {
         return dateofgame;
@@ -31,7 +36,4 @@ public class Game extends Entitet implements Serializable{
         this.awayteam = awayteam;
     }
 
-    private Date dateofgame;
-    private BigInteger hometeam;
-    private BigInteger awayteam;
 }

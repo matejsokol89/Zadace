@@ -12,10 +12,11 @@ import javax.persistence.ManyToOne;
 
 public class Player extends Entitet implements Serializable {
 
-    
     private String firstname;
     private String lastname;
-    
+    private String jerseynumber;
+    private String position;
+
     @ManyToOne
     private NbaTeam nbaTeam;
 
@@ -26,7 +27,6 @@ public class Player extends Entitet implements Serializable {
     public void setNbaTeam(NbaTeam nbaTeam) {
         this.nbaTeam = nbaTeam;
     }
-
 
     public String getFirstname() {
         return firstname;
@@ -44,13 +44,14 @@ public class Player extends Entitet implements Serializable {
         this.lastname = lastname;
     }
 
-    public String getYersnumber() {
-        return yersnumber;
+    public String getJerseynumber() {
+        return jerseynumber;
     }
 
-    public void setYersnumber(String yersnumber) {
-        this.yersnumber = yersnumber;
+    public void setJerseynumber(String jerseynumber) {
+        this.jerseynumber = jerseynumber;
     }
+
 
     public String getPosition() {
         return position;
@@ -59,7 +60,10 @@ public class Player extends Entitet implements Serializable {
     public void setPosition(String position) {
         this.position = position;
     }
-    private String yersnumber;
-    private String position;
-//private nbateam int not null;
+
+    @Override
+    public String toString() {
+        return getFirstname() + " " + getLastname();
+    }
+
 }
