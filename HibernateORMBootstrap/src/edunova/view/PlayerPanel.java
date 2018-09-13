@@ -6,7 +6,9 @@
 package edunova.view;
 
 import edunova.controller.ObradaPlayer;
+import edunova.model.NbaTeam;
 import edunova.model.Player;
+import edunova.pomocno.HibernateUtil;
 import edunova.pomocno.NbaException;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import java.util.Comparator;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -51,6 +54,10 @@ public class PlayerPanel extends javax.swing.JPanel {
             m.addElement(s);
         });
         lstEntiteti.setModel(m);
+        ocistiPolja();
+        if (m.getSize() > 0) {
+            lstEntiteti.setSelectedIndex(0);
+        }
     }
 
     private void ocistiBoje() {
@@ -76,6 +83,26 @@ public class PlayerPanel extends javax.swing.JPanel {
         entitet.setJerseynumber(txtYerseyNumber.getText());
         entitet.setPosition(txtPosition.getText());
         return true;
+    }
+    
+        private class BrisanjePlayera extends Thread {
+
+        public void run() {
+             prbBrisanje.setMinimum(0);
+        prbBrisanje.setMaximum(lstEntiteti.getSelectedValuesList().size());
+        int i=0;
+        
+        for (Player e : lstEntiteti.getSelectedValuesList()) {
+             prbBrisanje.setValue(++i);
+            try {
+                 obrada.obrisi(e);
+            } catch (Exception ex) {
+                 HibernateUtil.getSession().clear();
+              
+            }
+        }
+         ucitaj();
+        }
     }
 
     /**
@@ -104,6 +131,9 @@ public class PlayerPanel extends javax.swing.JPanel {
         txtPosition = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtYerseyNumber = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstTeams = new javax.swing.JList<>();
+        prbBrisanje = new javax.swing.JProgressBar();
 
         jLabel3.setText("Condition");
 
@@ -223,13 +253,15 @@ public class PlayerPanel extends javax.swing.JPanel {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtYerseyNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(pnlPodaciLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDodajNovi)
                     .addComponent(btnPromjena)
                     .addComponent(btnObrisi))
                 .addContainerGap())
         );
+
+        jScrollPane3.setViewportView(lstTeams);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -244,25 +276,37 @@ public class PlayerPanel extends javax.swing.JPanel {
                         .addComponent(txtUvjet, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnTrazi)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGap(33, 33, 33)
                 .addComponent(pnlPodaci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(91, 91, 91))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(249, 249, 249)
+                .addComponent(prbBrisanje, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUvjet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnTrazi))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
-                    .addComponent(pnlPodaci, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(84, 84, 84))
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtUvjet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnTrazi))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1))
+                            .addComponent(pnlPodaci, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(prbBrisanje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -290,7 +334,9 @@ public class PlayerPanel extends javax.swing.JPanel {
         txtLastName.setText(entitet.getLastname());
         txtPosition.setText(entitet.getPosition());
         txtYerseyNumber.setText(entitet.getJerseynumber());
-        
+        DefaultListModel<NbaTeam> m = new DefaultListModel<>();
+        lstTeams.setModel(m);
+      
     }//GEN-LAST:event_lstEntitetiValueChanged
 
     private void btnDodajNoviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajNoviActionPerformed
@@ -359,7 +405,7 @@ public class PlayerPanel extends javax.swing.JPanel {
 
         obrada.obrisi(entitet);
         ucitaj();  */
-        lstEntiteti.getSelectedValuesList().forEach((e) -> {
+        /*lstEntiteti.getSelectedValuesList().forEach((e) -> {
             try {
                 obrada.obrisi(e);
             } catch (Exception ex) {
@@ -369,7 +415,28 @@ public class PlayerPanel extends javax.swing.JPanel {
 
         });
 
-        ucitaj();
+        ucitaj();*/
+        
+                
+        if (lstEntiteti.getSelectedValuesList().size()==0){
+            JOptionPane.showMessageDialog(getRootPane(), "First choose one to delete");
+            return;
+        }
+        
+        if(lstEntiteti.getSelectedValuesList().size()==1){
+             try {
+                 obrada.obrisi(lstEntiteti.getSelectedValuesList().get(0));
+            } catch (Exception ex) {
+                HibernateUtil.getSession().clear();
+                JOptionPane.showMessageDialog(getRootPane(), "Player " + 
+                        lstEntiteti.getSelectedValuesList().get(0)
+                        + 
+                        " could not be deleted");
+            }
+              ucitaj();
+        }else{
+            new BrisanjePlayera().start();
+        }
 
     }//GEN-LAST:event_btnObrisiActionPerformed
 
@@ -401,8 +468,11 @@ public class PlayerPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<Player> lstEntiteti;
+    private javax.swing.JList<NbaTeam> lstTeams;
     private javax.swing.JPanel pnlPodaci;
+    protected javax.swing.JProgressBar prbBrisanje;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtLastName;
     private javax.swing.JTextField txtPosition;

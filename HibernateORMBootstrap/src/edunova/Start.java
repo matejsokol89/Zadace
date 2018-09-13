@@ -11,8 +11,8 @@ public class Start {
     public static void main(String[] args) {
        
 
-      //PocetniInsert.izvedi();
-      new Loading().setVisible(true);
+    //PocetniInsert.izvedi();
+    new Loading().setVisible(true);
 
         
     }

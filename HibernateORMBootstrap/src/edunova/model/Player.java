@@ -1,8 +1,10 @@
 package edunova.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -27,6 +29,10 @@ public class Player extends Entitet implements Serializable {
     public void setNbaTeam(NbaTeam nbaTeam) {
         this.nbaTeam = nbaTeam;
     }
+
+    
+
+ 
 
     public String getFirstname() {
         return firstname;
