@@ -2,15 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/Start.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/pomocno/Kontrola.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/model/NbaTeam.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/pomocno/PocetniInsert.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/hibernate.cfg.xml</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/model/Player.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/view/PlayerPanel.java</file>
-            <file>file:/G:/Zadace/HibernateORMBootstrap/src/edunova/view/Prozor.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

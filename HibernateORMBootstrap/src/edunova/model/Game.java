@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Game extends Entitet implements Serializable {
 
-    private Date dateofgame;
-    private BigInteger hometeam;
-    private BigInteger awayteam;
+     private Date dateofgame;
+    @ManyToOne
+    private NbaTeam hometeam;
+    @ManyToOne
+    private NbaTeam awayteam;
 
     public Date getDateofgame() {
         return dateofgame;
@@ -20,19 +23,19 @@ public class Game extends Entitet implements Serializable {
         this.dateofgame = dateofgame;
     }
 
-    public BigInteger getHometeam() {
+    public NbaTeam getHometeam() {
         return hometeam;
     }
 
-    public void setHometeam(BigInteger hometeam) {
+    public void setHometeam(NbaTeam hometeam) {
         this.hometeam = hometeam;
     }
 
-    public BigInteger getAwayteam() {
+    public NbaTeam getAwayteam() {
         return awayteam;
     }
 
-    public void setAwayteam(BigInteger awayteam) {
+    public void setAwayteam(NbaTeam awayteam) {
         this.awayteam = awayteam;
     }
 
