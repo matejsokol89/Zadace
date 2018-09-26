@@ -40,12 +40,6 @@ public  class NbaTeam extends Entitet implements Serializable {
         this.player = player;
     }
 
-    
-
-    
-    
-
-
     public String getName() {
         return name;
     }

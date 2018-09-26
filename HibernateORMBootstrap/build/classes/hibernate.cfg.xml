@@ -41,11 +41,11 @@
     
     
     <!-- moraju se slijedno navesti klase koje su mapirane -->
-    <mapping class="edunova.model.NbaTeam" /> 
-    <mapping class="edunova.model.Game" />
-    <mapping class="edunova.model.Player" />
-    <mapping class="edunova.model.PlayerStats" />
-    <mapping class="edunova.model.Operater" />
+    <mapping class="sokol.model.NbaTeam" /> 
+    <mapping class="sokol.model.Game" />
+    <mapping class="sokol.model.Player" />
+    <mapping class="sokol.model.PlayerStats" />
+    <mapping class="sokol.model.Operater" />
 
    
     

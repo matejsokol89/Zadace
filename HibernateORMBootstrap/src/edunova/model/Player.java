@@ -72,4 +72,9 @@ public class Player extends Entitet implements Serializable {
         return getFirstname() + " " + getLastname();
     }
 
+    @Override
+    public String getCSV() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
