@@ -29,18 +29,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 import sokol.controller.ObradaNbaTeam;
 import sokol.controller.ObradaPlayer;
+import sokol.model.Entitet;
 import sokol.model.NbaTeam;
 import sokol.model.Player;
 import sokol.model.NbaTeam;
 import sokol.pomocno.NbaException;
-
 
 public class Prozor extends javax.swing.JFrame {
 
@@ -72,62 +75,63 @@ public class Prozor extends javax.swing.JFrame {
         pnlOperators = new OperateriPanel();
 
         postaviPanel(pnlPocetna);
-        
-        pocetakRada=new Date();
 
-       
-       definirajTimer();
-       definirajTray();
+        pocetakRada = new Date();
+
+        definirajTimer();
+        definirajTray();
 
     }
-    
-     private void definirajTimer() {
-         Timer timer = new Timer();
-        timer.schedule(new  TimerTask() {
+
+    private void definirajTimer() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                
-                long diffInSeconds = (new Date().getTime() - pocetakRada.getTime())/1000;
-             
 
-    long diff[] = new long[] { 0, 0, 0, 0 };
-    /* sec */diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-    /* min */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-    /* hours */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-    /* days */diff[0] = (diffInSeconds = (diffInSeconds / 24));
+                long diffInSeconds = (new Date().getTime() - pocetakRada.getTime()) / 1000;
+
+                long diff[] = new long[]{0, 0, 0, 0};
+                /* sec */
+                diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+                /* min */
+                diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+                /* hours */
+                diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+                /* days */
+                diff[0] = (diffInSeconds = (diffInSeconds / 24));
 
                 lblVrijeme.setText(String.format(
-        "%s%d:%s%d:%s%d",
-        diff[1]<10 ? "0" : "",
-        diff[1],
-        diff[2]<10 ? "0" : "",
-        diff[2],
-        diff[3]<10 ? "0" : "",
-        diff[3]));
+                        "%s%d:%s%d:%s%d",
+                        diff[1] < 10 ? "0" : "",
+                        diff[1],
+                        diff[2] < 10 ? "0" : "",
+                        diff[2],
+                        diff[3] < 10 ? "0" : "",
+                        diff[3]));
             }
         }, 0, 1000);
     }
 
     private void definirajTray() {
-       
-        
-         if (SystemTray.isSupported()) {
-      SystemTray tray = SystemTray.getSystemTray();
 
-      trayIcon.setImageAutoSize(true);
-      trayIcon.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            setVisible(true);
-            setExtendedState(JFrame.NORMAL);
+        if (SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+
+            trayIcon.setImageAutoSize(true);
+            trayIcon.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(true);
+                    setExtendedState(JFrame.NORMAL);
+                }
+            });
+
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                System.err.println("TrayIcon could not be added.");
+            }
         }
-      });
-
-      try {
-        tray.add(trayIcon);
-      } catch (AWTException e) {
-        System.err.println("TrayIcon could not be added.");
-      }
-    }
     }
 
     /**
@@ -157,6 +161,8 @@ public class Prozor extends javax.swing.JFrame {
         menuNbaJson = new javax.swing.JMenuItem();
         menuApi = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
+        mnuNbaTeams = new javax.swing.JMenu();
+        menuTeamCSV = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -305,6 +311,19 @@ public class Prozor extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Export");
+
+        mnuNbaTeams.setText("Nba teams");
+
+        menuTeamCSV.setText("CSV");
+        menuTeamCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuTeamCSVActionPerformed(evt);
+            }
+        });
+        mnuNbaTeams.add(menuTeamCSV);
+
+        jMenu3.add(mnuNbaTeams);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Help");
@@ -385,14 +404,14 @@ public class Prozor extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOperatorsActionPerformed
 
     private void formWindowIconified(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowIconified
-                setVisible(false);
+        setVisible(false);
 
     }//GEN-LAST:event_formWindowIconified
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        if (JOptionPane.showConfirmDialog(getRootPane(),"Sigurno izaći","Izlaz iz aplikacije"
-            ,JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)==JOptionPane.YES_OPTION){
-        dispose();
+        if (JOptionPane.showConfirmDialog(getRootPane(), "Sigurno izaći", "Izlaz iz aplikacije",
+                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            dispose();
         }
 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
@@ -411,29 +430,53 @@ public class Prozor extends javax.swing.JFrame {
 
     private void menuNbaJsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNbaJsonActionPerformed
         Gson gson = new Gson();
-        List<NbaTeam> smjerovi = gson.fromJson(ucitajTekst("JSON DATOTEKA", "json"), new TypeToken<List<NbaTeam>>(){}.getType());
-        ObradaNbaTeam o = new ObradaNbaTeam();
-        ObradaPlayer og = new ObradaPlayer();
-        for(NbaTeam s: smjerovi){
-            
+        List<NbaTeam> smjerovi = gson.fromJson(ucitajTekst("JSON DATOTEKA", "json"), new TypeToken<List<NbaTeam>>() {
+        }.getType());
+        ObradaNbaTeam on = new ObradaNbaTeam();
+        ObradaPlayer op = new ObradaPlayer();
+        for (NbaTeam nt : smjerovi) {
             try {
-
-            for(Player g: s.getPlayeri()){
-                g = og.dodaj(g);
-                g.setNbaTeam(s);
+                on.dodaj(nt);
                 
-            }
-                o.dodaj(s);
-            } catch (NbaException e) {
+                /*try {
+                
+                for (Player p : nt.getPlayeri()) {
+                p = op.dodaj(p);
+                p.setNbaTeam(nt);
+                
+                }
+                on.dodaj(nt);
+                } catch (NbaException e) {
                 System.out.println(e.getPoruka());
-            }
-            
+                }*/
+            } catch (NbaException ex) {
+                printStackTrace(ex);            }
+
         }
     }//GEN-LAST:event_menuNbaJsonActionPerformed
 
-    /**/
+    private void menuTeamCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTeamCSVActionPerformed
+        ObradaNbaTeam o = new ObradaNbaTeam();
+        spremiCSV(o.getListEntitet());
+    }//GEN-LAST:event_menuTeamCSVActionPerformed
 
-     private void spremiTekst(String s, String nazivEkstenzije, String ekstenzija, String nazivDatoteke, boolean otvoriNakonSpremanja) {
+    private void spremiCSV(List<Entitet> lista) {
+        String naziv = "podaci";
+        if (lista.size() > 0) {
+            Entitet e = lista.get(0);
+            naziv = e.getClass().getSimpleName().toLowerCase();
+            StringBuilder s = new StringBuilder();
+            lista.forEach((en) -> {
+                s.append(en.getCSV());
+                s.append("\n");
+            });
+            spremiTekst(s.toString(), "CSV DATOTEKA", "csv", naziv, true);
+
+        }
+    }
+    
+    /**/
+    private void spremiTekst(String s, String nazivEkstenzije, String ekstenzija, String nazivDatoteke, boolean otvoriNakonSpremanja) {
         JFileChooser spremiKao = new JFileChooser();
         spremiKao.setSelectedFile(new File(System.getProperty("user.home") + File.separator + nazivDatoteke));
         spremiKao.setCurrentDirectory(new File(System.getProperty("user.home")));
@@ -466,39 +509,36 @@ public class Prozor extends javax.swing.JFrame {
 
         }
     }
-    
-         private String ucitajTekst( String nazivEkstenzije, String ekstenzija) {
+
+    private String ucitajTekst(String nazivEkstenzije, String ekstenzija) {
         JFileChooser ucitaj = new JFileChooser();
         ucitaj.setCurrentDirectory(new File(System.getProperty("user.home")));
         FileNameExtensionFilter filter = new FileNameExtensionFilter(nazivEkstenzije, ekstenzija);
 
         ucitaj.setFileFilter(filter);
         if (ucitaj.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
-           try {
-            BufferedReader br = new BufferedReader(new FileReader(ucitaj.getSelectedFile()));
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(ucitaj.getSelectedFile()));
 
-    StringBuilder sb = new StringBuilder();
-    String line = br.readLine();
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-    while (line != null) {
-        sb.append(line);
-        sb.append(System.lineSeparator());
-        line = br.readLine();
-    }
-    br.close();
-    return  sb.toString();
-           }
-           catch( IOException  e){
-           
-}  
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+                }
+                br.close();
+                return sb.toString();
+            } catch (IOException e) {
+
+            }
 
         }
-        
+
         return "";
     }
-         
-  
-         
+
     private void postaviPanel(JPanel panel) {
         pnlSadrzaj.removeAll();
         pnlSadrzaj.add(panel);
@@ -551,6 +591,8 @@ public class Prozor extends javax.swing.JFrame {
     private javax.swing.JLabel lblVrijeme;
     private javax.swing.JMenuItem menuApi;
     private javax.swing.JMenuItem menuNbaJson;
+    private javax.swing.JMenuItem menuTeamCSV;
+    private javax.swing.JMenu mnuNbaTeams;
     private javax.swing.JPanel pnlIzbornik;
     private javax.swing.JPanel pnlSadrzaj;
     // End of variables declaration//GEN-END:variables
@@ -560,5 +602,5 @@ public class Prozor extends javax.swing.JFrame {
             c.setBackground(Color.gray);
         }
     }
-    
+
 }

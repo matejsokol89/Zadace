@@ -39,4 +39,10 @@ public class Game extends Entitet implements Serializable {
         this.awayteam = awayteam;
     }
 
+    @Override
+    public String getCSV() {
+        return getAwayteam() + "\t" + getHometeam() + "\t"  + getDateofgame();
+    }
+    
+
 }

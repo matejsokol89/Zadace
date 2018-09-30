@@ -54,4 +54,10 @@ public class Operater extends Entitet implements Serializable {
         this.lozinka = lozinka;
     }
 
+    @Override
+    public String getCSV() {
+        return getEmail()+ "\t" + getIme()+ "\t" + getPrezime() + "\t" + getLozinka();
+    }
+    
+
 }

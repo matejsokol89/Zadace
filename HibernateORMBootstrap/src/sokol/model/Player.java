@@ -72,4 +72,9 @@ public class Player extends Entitet implements Serializable {
         return getFirstname() + " " + getLastname();
     }
 
+    @Override
+    public String getCSV() {
+        return getFirstname()+ "\t" + getLastname()+ "\t" + getJerseynumber()+ "\t" + getPosition();
+    }
+
 }

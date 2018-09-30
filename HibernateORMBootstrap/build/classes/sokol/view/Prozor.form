@@ -53,6 +53,23 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Export"/>
           </Properties>
+          <SubComponents>
+            <Menu class="javax.swing.JMenu" name="mnuNbaTeams">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Nba teams"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="menuTeamCSV">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="CSV"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuTeamCSVActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu4">
           <Properties>

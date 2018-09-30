@@ -15,6 +15,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class Entitet {
+    public abstract String getCSV();
     @Id
     @GeneratedValue
     private Integer idNba;

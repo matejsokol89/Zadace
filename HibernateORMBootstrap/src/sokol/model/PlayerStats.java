@@ -102,5 +102,12 @@ public class PlayerStats extends Entitet implements Serializable {
     public void setPlayer(BigDecimal player) {
         this.player = player;
     }
+    
+    @Override
+    public String getCSV() {
+        return getFg2ptatt()+ "\t" + getFg2ptmade()+ "\t" + getFg3ptatt()+ "\t" + getFg3ptmade()
+                + getFtatt()+ "\t" + getFtmade()+ "\t" + getGame()+ "\t" + getGamesplayed();
+    }
+
 
 }

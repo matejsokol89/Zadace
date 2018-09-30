@@ -62,6 +62,8 @@ public  class NbaTeam extends Entitet implements Serializable {
     public String toString() {
         return getName();
     }
-    
-
+    @Override
+    public String getCSV(){
+        return getName() + "\t" + getCity() + "\t" + getDatumPocetka();
+    }
 }
