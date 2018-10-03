@@ -17,6 +17,15 @@ public  class NbaTeam extends Entitet implements Serializable {
    
     private String name;
     private String city;
+    private String teamId;
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
+    }
     
     @Temporal(TemporalType.DATE)
     private Date datumPocetka;
@@ -57,11 +66,13 @@ public  class NbaTeam extends Entitet implements Serializable {
     public void setCity(String city) {
         this.city = city;
     }
-   
+
     @Override
     public String toString() {
-        return getName();
+        return "NbaTeam{" + "name=" + name + ", city=" + city + ", teamId=" + teamId + ", datumPocetka=" + datumPocetka + ", playeri=" + playeri + '}';
     }
+   
+    
     @Override
     public String getCSV(){
         return getName() + "\t" + getCity() + "\t" + getDatumPocetka();

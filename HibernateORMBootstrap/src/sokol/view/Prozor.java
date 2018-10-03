@@ -8,6 +8,7 @@ package sokol.view;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import sokol.model.Operater;
 import java.awt.AWTException;
@@ -25,24 +26,30 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
+import org.hibernate.Session;
 import sokol.controller.ObradaNbaTeam;
 import sokol.controller.ObradaPlayer;
+import sokol.json.team.Standard;
+import sokol.json.team.Teams;
 import sokol.model.Entitet;
-import sokol.model.NbaTeam;
 import sokol.model.Player;
 import sokol.model.NbaTeam;
+import sokol.pomocno.HibernateUtil;
 import sokol.pomocno.NbaException;
 
 public class Prozor extends javax.swing.JFrame {
@@ -160,9 +167,12 @@ public class Prozor extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         menuNbaJson = new javax.swing.JMenuItem();
         menuApi = new javax.swing.JMenuItem();
+        menuPlayer = new javax.swing.JMenu();
+        menuApiPlayer = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mnuNbaTeams = new javax.swing.JMenu();
         menuTeamCSV = new javax.swing.JMenuItem();
+        menuTeamJSON = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -308,6 +318,18 @@ public class Prozor extends javax.swing.JFrame {
 
         jMenu2.add(jMenu5);
 
+        menuPlayer.setText("Player");
+
+        menuApiPlayer.setText("Api");
+        menuApiPlayer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuApiPlayerActionPerformed(evt);
+            }
+        });
+        menuPlayer.add(menuApiPlayer);
+
+        jMenu2.add(menuPlayer);
+
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Export");
@@ -321,6 +343,14 @@ public class Prozor extends javax.swing.JFrame {
             }
         });
         mnuNbaTeams.add(menuTeamCSV);
+
+        menuTeamJSON.setText("JSON");
+        menuTeamJSON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuTeamJSONActionPerformed(evt);
+            }
+        });
+        mnuNbaTeams.add(menuTeamJSON);
 
         jMenu3.add(mnuNbaTeams);
 
@@ -410,7 +440,7 @@ public class Prozor extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         if (JOptionPane.showConfirmDialog(getRootPane(), "Sigurno izaći", "Izlaz iz aplikacije",
-                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             dispose();
         }
 
@@ -425,7 +455,35 @@ public class Prozor extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu4ActionPerformed
 
     private void menuApiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuApiActionPerformed
-        // TODO add your handling code here:
+        String sJsonContent = "";
+        try {//trebam api dovuc a da radi
+            URL url = new URL("http://data.nba.net/prod/v2/2018/teams.json");
+            URLConnection request = url.openConnection();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8))) {
+                sJsonContent = reader.lines().collect(Collectors.joining("\n"));
+                //System.out.println(sJsonContent);
+                Gson gson = new Gson();
+                Teams teams = gson.fromJson(sJsonContent, Teams.class);
+
+                List<Standard> clubs = teams.getLeague().getStandard();
+                for (Standard club : clubs) {
+                    System.out.println(club);
+                    ObradaNbaTeam obrada = new ObradaNbaTeam();
+                    NbaTeam team = new NbaTeam();
+                    team.setCity(club.getCity());
+                    team.setName(club.getNickname());
+                    // TODO: add nbaApiTeamId Integer
+                    team.setTeamId(club.getTeamId());
+
+                    obrada.dodaj(team);
+                }
+
+            }
+
+        } catch (Exception e) {
+        }
+
+
     }//GEN-LAST:event_menuApiActionPerformed
 
     private void menuNbaJsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNbaJsonActionPerformed
@@ -437,20 +495,10 @@ public class Prozor extends javax.swing.JFrame {
         for (NbaTeam nt : smjerovi) {
             try {
                 on.dodaj(nt);
-                
-                /*try {
-                
-                for (Player p : nt.getPlayeri()) {
-                p = op.dodaj(p);
-                p.setNbaTeam(nt);
-                
-                }
-                on.dodaj(nt);
-                } catch (NbaException e) {
-                System.out.println(e.getPoruka());
-                }*/
+
             } catch (NbaException ex) {
-                printStackTrace(ex);            }
+                printStackTrace(ex);
+            }
 
         }
     }//GEN-LAST:event_menuNbaJsonActionPerformed
@@ -459,6 +507,58 @@ public class Prozor extends javax.swing.JFrame {
         ObradaNbaTeam o = new ObradaNbaTeam();
         spremiCSV(o.getListEntitet());
     }//GEN-LAST:event_menuTeamCSVActionPerformed
+
+    private void menuTeamJSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTeamJSONActionPerformed
+        ObradaNbaTeam o = new ObradaNbaTeam();
+        spremiJSON(o.getListEntitet());
+    }//GEN-LAST:event_menuTeamJSONActionPerformed
+
+    private void menuApiPlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuApiPlayerActionPerformed
+        String sJsonContent = "";
+        try {//trebam api dovuc a da radi
+            URL url = new URL("http://data.nba.net/prod/v1/2018/players.json");
+            URLConnection request = url.openConnection();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8))) {
+                sJsonContent = reader.lines().collect(Collectors.joining("\n"));
+                //System.out.println(sJsonContent);
+                Gson gson = new Gson();
+                sokol.json.player.Player playerClass = gson.fromJson(sJsonContent, sokol.json.player.Player.class);
+
+                List<sokol.json.player.Standard> players = playerClass.getLeague().getStandard();
+                for (sokol.json.player.Standard player : players) {
+                    System.out.println(player);
+                    ObradaPlayer obradaPlayer = new ObradaPlayer();
+                    Player firstPlayer = new Player();
+                    firstPlayer.setFirstname(player.getFirstName());
+                    firstPlayer.setLastname(player.getLastName());
+                    firstPlayer.setJerseynumber(player.getJersey());
+                    firstPlayer.setPosition(player.getPos());
+                    obradaPlayer.dodaj(firstPlayer);
+                    
+                    // TODO: Poveži tim sa playerTEamId
+                    player.getTeamId(); // convert string to int
+                    int teamId = 0;
+                    try {
+                        System.out.println("looking for team in db");
+                        Session session = HibernateUtil.getSession();
+                        NbaTeam team =  (NbaTeam) session.get(NbaTeam.class, teamId);
+                         System.out.println("team found:" + team);
+                        } catch (Exception e) {
+
+                        }
+                   
+                   
+                   
+                   
+                   
+                }
+
+            }
+
+        } catch (Exception e) {
+        }
+
+    }//GEN-LAST:event_menuApiPlayerActionPerformed
 
     private void spremiCSV(List<Entitet> lista) {
         String naziv = "podaci";
@@ -474,7 +574,7 @@ public class Prozor extends javax.swing.JFrame {
 
         }
     }
-    
+
     /**/
     private void spremiTekst(String s, String nazivEkstenzije, String ekstenzija, String nazivDatoteke, boolean otvoriNakonSpremanja) {
         JFileChooser spremiKao = new JFileChooser();
@@ -508,6 +608,37 @@ public class Prozor extends javax.swing.JFrame {
             }
 
         }
+    }
+
+    private class IzbjegniPovratnoNbaTeamove implements ExclusionStrategy {
+
+        public boolean shouldSkipClass(Class<?> arg0) {
+            return false;
+        }
+
+        public boolean shouldSkipField(FieldAttributes f) {
+
+            return (f.getDeclaringClass() == NbaTeam.class && f.getName().equals("player")
+                    || f.getDeclaringClass() == Player.class && f.getName().equals("nbaTeam"));
+        }
+
+    }
+
+    private void spremiJSON(List<Entitet> lista) {
+        Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new IzbjegniPovratnoNbaTeamove())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        String json = gson.toJson(lista);
+
+        String naziv = "podaci";
+        if (lista.size() > 0) {
+            Entitet e = lista.get(0);
+            naziv = e.getClass().getSimpleName().toLowerCase();
+            spremiTekst(json, "JSON DATOTEKA", "json", naziv, false);
+        }
+
     }
 
     private String ucitajTekst(String nazivEkstenzije, String ekstenzija) {
@@ -590,8 +721,11 @@ public class Prozor extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblVrijeme;
     private javax.swing.JMenuItem menuApi;
+    private javax.swing.JMenuItem menuApiPlayer;
     private javax.swing.JMenuItem menuNbaJson;
+    private javax.swing.JMenu menuPlayer;
     private javax.swing.JMenuItem menuTeamCSV;
+    private javax.swing.JMenuItem menuTeamJSON;
     private javax.swing.JMenu mnuNbaTeams;
     private javax.swing.JPanel pnlIzbornik;
     private javax.swing.JPanel pnlSadrzaj;
