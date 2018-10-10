@@ -41,6 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import sokol.controller.ObradaNbaTeam;
 import sokol.controller.ObradaPlayer;
@@ -166,7 +167,7 @@ public class Prozor extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         menuNbaJson = new javax.swing.JMenuItem();
-        menuApi = new javax.swing.JMenuItem();
+        menuApiNbaTeams = new javax.swing.JMenuItem();
         menuPlayer = new javax.swing.JMenu();
         menuApiPlayer = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
@@ -232,8 +233,8 @@ public class Prozor extends javax.swing.JFrame {
             .addGroup(pnlIzbornikLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlIzbornikLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnPocetna, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                     .addComponent(btnOperators, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                    .addComponent(btnPocetna, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                     .addComponent(btnGames, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                     .addComponent(btnPlayerStats, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                     .addComponent(btnPlayers, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
@@ -245,7 +246,7 @@ public class Prozor extends javax.swing.JFrame {
             .addGroup(pnlIzbornikLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(btnPocetna, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnNbaTeams, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -255,7 +256,7 @@ public class Prozor extends javax.swing.JFrame {
                 .addComponent(btnGames, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnOperators, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlSadrzaj.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
@@ -308,13 +309,13 @@ public class Prozor extends javax.swing.JFrame {
         });
         jMenu5.add(menuNbaJson);
 
-        menuApi.setText("API");
-        menuApi.addActionListener(new java.awt.event.ActionListener() {
+        menuApiNbaTeams.setText("API");
+        menuApiNbaTeams.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuApiActionPerformed(evt);
+                menuApiNbaTeamsActionPerformed(evt);
             }
         });
-        jMenu5.add(menuApi);
+        jMenu5.add(menuApiNbaTeams);
 
         jMenu2.add(jMenu5);
 
@@ -401,7 +402,7 @@ public class Prozor extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(pnlSadrzaj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblVrijeme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addComponent(lblVrijeme, javax.swing.GroupLayout.DEFAULT_SIZE, 7, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
 
@@ -454,8 +455,9 @@ public class Prozor extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenu4ActionPerformed
 
-    private void menuApiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuApiActionPerformed
+    private void menuApiNbaTeamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuApiNbaTeamsActionPerformed
         String sJsonContent = "";
+
         try {//trebam api dovuc a da radi
             URL url = new URL("http://data.nba.net/prod/v2/2018/teams.json");
             URLConnection request = url.openConnection();
@@ -484,15 +486,15 @@ public class Prozor extends javax.swing.JFrame {
         }
 
 
-    }//GEN-LAST:event_menuApiActionPerformed
+    }//GEN-LAST:event_menuApiNbaTeamsActionPerformed
 
     private void menuNbaJsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNbaJsonActionPerformed
         Gson gson = new Gson();
-        List<NbaTeam> smjerovi = gson.fromJson(ucitajTekst("JSON DATOTEKA", "json"), new TypeToken<List<NbaTeam>>() {
+        List<NbaTeam> timovi = gson.fromJson(ucitajTekst("JSON DATOTEKA", "json"), new TypeToken<List<NbaTeam>>() {
         }.getType());
         ObradaNbaTeam on = new ObradaNbaTeam();
         ObradaPlayer op = new ObradaPlayer();
-        for (NbaTeam nt : smjerovi) {
+        for (NbaTeam nt : timovi) {
             try {
                 on.dodaj(nt);
 
@@ -515,6 +517,7 @@ public class Prozor extends javax.swing.JFrame {
 
     private void menuApiPlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuApiPlayerActionPerformed
         String sJsonContent = "";
+
         try {//trebam api dovuc a da radi
             URL url = new URL("http://data.nba.net/prod/v1/2018/players.json");
             URLConnection request = url.openConnection();
@@ -533,24 +536,33 @@ public class Prozor extends javax.swing.JFrame {
                     firstPlayer.setLastname(player.getLastName());
                     firstPlayer.setJerseynumber(player.getJersey());
                     firstPlayer.setPosition(player.getPos());
-                    obradaPlayer.dodaj(firstPlayer);
-                    
-                    // TODO: Poveži tim sa playerTEamId
-                    player.getTeamId(); // convert string to int
-                    int teamId = 0;
-                    try {
-                        System.out.println("looking for team in db");
-                        Session session = HibernateUtil.getSession();
-                        NbaTeam team =  (NbaTeam) session.get(NbaTeam.class, teamId);
-                         System.out.println("team found:" + team);
-                        } catch (Exception e) {
 
-                        }
-                   
-                   
-                   
-                   
-                   
+                    firstPlayer = obradaPlayer.dodaj(firstPlayer);
+
+                    // TODO: Poveži tim sa playerTEamId
+                    String teamId = player.getTeamId();
+
+                    try {
+                        ObradaNbaTeam obrada = new ObradaNbaTeam();
+                        System.out.println("looking for team in db by teamid " + teamId);
+                        Session session = HibernateUtil.getSession();
+
+                        //NbaTeam team = (NbaTeam) session.get(NbaTeam.class, teamId);
+                        String hql = "FROM NbaTeam N WHERE N.teamId = '" + teamId + "'";
+                        Query query = session.createQuery(hql);
+                        List results = query.list();
+                        System.out.println("team query:" + results);
+                        NbaTeam team = (NbaTeam) results.get(0);
+                        System.out.println("team found:" + team);
+                        firstPlayer.setNbaTeam(team);
+                        team.getPlayeri().add(firstPlayer);
+                        team = obrada.dodaj(team);
+                        System.out.println("team updated:" + team);
+                        
+                        //session.close();
+                    } catch (Exception e) {
+                        System.out.println("team update error:" + e.getLocalizedMessage());
+                    }
                 }
 
             }
@@ -720,7 +732,7 @@ public class Prozor extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblVrijeme;
-    private javax.swing.JMenuItem menuApi;
+    private javax.swing.JMenuItem menuApiNbaTeams;
     private javax.swing.JMenuItem menuApiPlayer;
     private javax.swing.JMenuItem menuNbaJson;
     private javax.swing.JMenu menuPlayer;

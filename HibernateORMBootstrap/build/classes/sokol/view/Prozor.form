@@ -37,12 +37,27 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuNbaJsonActionPerformed"/>
                   </Events>
                 </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="menuApi">
+                <MenuItem class="javax.swing.JMenuItem" name="menuApiNbaTeams">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="API"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuApiActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuApiNbaTeamsActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="menuPlayer">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Player"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="menuApiPlayer">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Api"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuApiPlayerActionPerformed"/>
                   </Events>
                 </MenuItem>
               </SubComponents>
@@ -65,6 +80,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuTeamCSVActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="menuTeamJSON">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="JSON"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuTeamJSONActionPerformed"/>
                   </Events>
                 </MenuItem>
               </SubComponents>
@@ -143,7 +166,7 @@
                           <Group type="102" attributes="0">
                               <Component id="pnlSadrzaj" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lblVrijeme" max="32767" attributes="0"/>
+                              <Component id="lblVrijeme" pref="7" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -162,8 +185,8 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btnPocetna" pref="93" max="32767" attributes="0"/>
                       <Component id="btnOperators" alignment="2" pref="93" max="32767" attributes="0"/>
-                      <Component id="btnPocetna" alignment="2" pref="93" max="32767" attributes="0"/>
                       <Component id="btnGames" alignment="1" pref="93" max="32767" attributes="0"/>
                       <Component id="btnPlayerStats" alignment="1" pref="93" max="32767" attributes="0"/>
                       <Component id="btnPlayers" alignment="0" pref="93" max="32767" attributes="0"/>
@@ -178,7 +201,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="btnPocetna" min="-2" pref="37" max="-2" attributes="0"/>
-                  <EmptySpace pref="38" max="32767" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnNbaTeams" min="-2" pref="37" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnPlayers" min="-2" pref="37" max="-2" attributes="0"/>
@@ -188,7 +211,7 @@
                   <Component id="btnGames" min="-2" pref="37" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                   <Component id="btnOperators" min="-2" pref="37" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

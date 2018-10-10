@@ -3,6 +3,7 @@ package sokol.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -30,7 +31,7 @@ public  class NbaTeam extends Entitet implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date datumPocetka;
     
-    @OneToMany(mappedBy = "nbaTeam")
+    @OneToMany(mappedBy = "nbaTeam",  cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE })
     private List<Player> playeri;
 
 
@@ -69,7 +70,8 @@ public  class NbaTeam extends Entitet implements Serializable {
 
     @Override
     public String toString() {
-        return "NbaTeam{" + "name=" + name + ", city=" + city + ", teamId=" + teamId + ", datumPocetka=" + datumPocetka + ", playeri=" + playeri + '}';
+        //return "NbaTeam{" + "name=" + name + ", city=" + city + ", teamId=" + teamId + ", datumPocetka=" + datumPocetka + ", playeri=" + playeri + '}';
+        return this.getName();
     }
    
     
