@@ -66,7 +66,7 @@ public class NbaTeamWithPlayers extends javax.swing.JPanel {
         m.setRowCount(0);
 
         lista.forEach((s) -> {
-            Object[] niz = {s.getName(), s.getCity()};
+            Object[] niz = {s.getName()};
             m.addRow(niz);
             m.setValueAt(s, m.getRowCount() - 1, 0);
         });
@@ -125,6 +125,7 @@ public class NbaTeamWithPlayers extends javax.swing.JPanel {
                 txtCity.setText(entitet.getCity());
                 //ovo radi kada su vrijednost hashcode iste
                 cmbCity.setSelectedItem(entitet.getName());
+                System.out.println("Selected 1 " + entitet);
 
                 if (entitet.getPlayeri() != null) {
 
@@ -173,6 +174,8 @@ public class NbaTeamWithPlayers extends javax.swing.JPanel {
         ocistiPolja();
         txtName.setText(entitet.getName());
         txtCity.setText(entitet.getCity());
+        
+        System.out.println("Selected 2 " + entitet);
 
         DefaultListModel<Player> m = new DefaultListModel<>();
         entitet.getPlayeri().forEach((p) -> {

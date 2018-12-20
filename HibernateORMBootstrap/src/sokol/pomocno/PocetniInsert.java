@@ -25,8 +25,8 @@ public class PocetniInsert {
         session.beginTransaction();
 
         kreirajOperatera(session);
-        NbaTeam nbaTeam = kreirajNbaTeam(session);
-        Player player = kreirajPlayera(session, nbaTeam);
+       // NbaTeam nbaTeam = kreirajNbaTeam(session);
+       // Player player = kreirajPlayera(session, nbaTeam);
         session.getTransaction().commit();
     }
 
@@ -39,7 +39,7 @@ public class PocetniInsert {
         session.save(o);
     }
 
-    private static NbaTeam kreirajNbaTeam(Session session) {
+   /* private static NbaTeam kreirajNbaTeam(Session session) {
         NbaTeam newTeam = new NbaTeam();
         newTeam.setName("Thunders");
         newTeam.setCity("Oklahoma");
@@ -57,6 +57,6 @@ public class PocetniInsert {
         session.save(newPlayer);
         return newPlayer;
 
-    }
+    }*/
 
 }
